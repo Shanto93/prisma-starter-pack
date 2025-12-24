@@ -4,6 +4,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import cron from "node-cron";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler.js";
+import router from "./app/routes/index.js";
 
 const app: Application = express();
 app.use(cookieParser());
@@ -24,18 +25,19 @@ app.use(express.urlencoded({ extended: true }));
 cron.schedule("*/5 * * * *", () => {
   try {
   } catch (err) {
-    console.error("❌ Cron job error:", err);
+    console.error("Cron job error:", err);
   }
 });
 
 app.get("/", (req: Request, res: Response) => {
   res.send({
-    Message: "Ph health care server..",
+    Message: "Test server..",
   });
 });
 
 app.use(globalErrorHandler);
 
+app.use("/api/v1", router);
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(httpStatus.NOT_FOUND).json({
     success: false,
